@@ -15,3 +15,49 @@ L.polygon([
     [40.77644550344593, -119.18029019558828],
     [40.7645145852504, -119.21121839614607]
 ]).addTo(mymap);
+
+
+class Beacon {
+    constructor(
+        id,
+        lat,
+        lon,
+        // heading,
+        // vehiclePower,
+        // configVersion,
+        // temp
+    ){
+        this.id = id;
+        this.lat = lat;
+        this.lon = lon;
+        // this.heading = heading;
+        // this.vehiclePower = vehiclePower;
+        // this.configVersion = configVersion;
+        // this.temp = temp;
+        this.icon = L.icon({
+            iconUrl: './assets/car.png',
+            iconSize:     [48, 48], // size of the icon
+            iconAnchor:   [24, 24], // point of the icon which will correspond to marker's location
+        });
+        this.marker = L.marker(
+            [this.lat, this.lon],
+            {icon: this.icon},
+        );
+    }
+}
+
+let beacons = [new Beacon(0, 40.7645145852504, -119.21121839614607)];
+
+// Plot beacon on map
+beacons.forEach(beacon => {
+   beacon.marker.addTo(mymap);
+});
+
+
+setInterval(function(){
+    beacons.forEach(beacon => {
+        beacon.lat = beacon.lat + Math.floor(Math.random() * 10) / 100000;
+        beacon.lon = beacon.lon + Math.floor(Math.random() * 10) / 100000;
+        beacon.marker.setLatLng([beacon.lat, beacon.lon]);
+    });
+}, 1000);
