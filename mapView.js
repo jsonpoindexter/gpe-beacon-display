@@ -2,15 +2,20 @@ var map = L.map('map', {
     zoomControl: false
 }).setView([40.7864, -119.2065], 14);
 
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-    maxZoom: 18,
-    id: 'mapbox.satellite'
-}).addTo(map);
+// L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+//     maxZoom: 18,
+//     id: 'mapbox.satellite'
+// }).addTo(map)
+
+L.tileLayer(
+    './assets/tiles/sat_tiles/{z0}/{x0}/{x1}/{y0}/{y1}.png', {
+    maxZoom: 18
+}).addTo(map);;
 
 L.control.zoom({position: 'bottomright'}).addTo(map)
 
 
-// Coordinates from iBurn Maps 2017: https://github.com/iBurnApp/iBurn-Data/tree/master/data/2017/geo
+// CoordiFnates from iBurn Maps 2017: https://github.com/iBurnApp/iBurn-Data/tree/master/data/2017/geo
 L.polygon([
     [40.7645145852504, -119.21121839614607],
     [40.78309835641549, -119.23576756423887],
