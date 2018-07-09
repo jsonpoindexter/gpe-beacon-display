@@ -46,12 +46,18 @@ new Vue({
                 markerFeatures.forEach((feature) => {
                     feature.leafletObject = L.marker(feature.coords)
                         .bindPopup(feature.name);
+                    if(layer.active) {
+                        feature.leafletObject.addTo(this.map);
+                    }
                 });
 
                 const polygonFeatures = layer.features.filter(feature => feature.type === 'polygon');
                 polygonFeatures.forEach((feature) => {
                     feature.leafletObject = L.polygon(feature.coords)
                         .bindPopup(feature.name);
+                    if(layer.active) {
+                        feature.leafletObject.addTo(this.map);
+                    }
                 });
             });
         },
