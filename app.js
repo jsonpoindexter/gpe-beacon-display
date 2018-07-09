@@ -32,12 +32,9 @@ new Vue({
         initMap() {
             this.map = L.map('map').setView([40.7864, -119.2065], 14);
             this.tileLayer = L.tileLayer(
-                'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png',
-                {
-                    maxZoom: 18,
-                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
-                }
-            );
+                './static/leaflet/tiles/sat_tiles/{z0}/{x0}/{x1}/{y0}/{y1}.png', {
+                    maxZoom: 18
+                });
             this.tileLayer.addTo(this.map);
         },
         initLayers() {
