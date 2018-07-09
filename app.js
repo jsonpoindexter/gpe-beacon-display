@@ -30,12 +30,12 @@ new Vue({
     },
     methods: {
         initMap() {
-            this.map = L.map('map').setView([40.7864, -119.2065], 14);
+            this.map = L.map('map', { zoomControl: false }).setView([40.7864, -119.2065], 14);
             this.tileLayer = L.tileLayer(
                 './static/leaflet/tiles/sat_tiles/{z0}/{x0}/{x1}/{y0}/{y1}.png', {
                     maxZoom: 18
-                });
-            this.tileLayer.addTo(this.map);
+                }).addTo(this.map);
+            this.control.zoom = L.control.zoom({position: 'bottomright'}).addTo(this.map);
         },
         initLayers() {
             this.layers.forEach((layer) => {
