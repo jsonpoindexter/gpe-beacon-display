@@ -10,7 +10,6 @@ html, body, #app {
     overflow: hidden;
 }
 
-
 #menu {
     height: auto;
     width: 30%;
@@ -23,3 +22,11 @@ html, body, #app {
     border-radius: 10px;
 }
 
+#menuTable {
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    transition: width 0.8s ease;
+    /*display: flex;*/
+    /*overflow-x: hidden;*/
+}
