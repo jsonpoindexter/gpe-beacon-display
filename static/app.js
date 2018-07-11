@@ -83,7 +83,7 @@ new Vue({
         initMap() {
             this.map = L.map('map', { zoomControl: false }).setView([40.7864, -119.2065], 14);
             this.tileLayer = L.tileLayer(
-                'leaflet/tiles/sat_tiles/{z0}/{x0}/{x1}/{y0}/{y1}.png', {
+                'leaflet/tiles/ter_tiles/{z0}/{x0}/{x1}/{y0}/{y1}.png', {
                     maxZoom: 18
                 }).addTo(this.map);
             L.control.zoom({position: 'bottomright'}).addTo(this.map);
