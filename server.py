@@ -1,5 +1,5 @@
 import sys
-import random
+import json
 
 from twisted.web.static import File
 from twisted.python import log
@@ -13,73 +13,28 @@ from autobahn.twisted.resource import WebSocketResource
 
 
 class SomeServerProtocol(WebSocketServerProtocol):
+    def onConnect(self, request):
+        print("Client connecting: {}".format(request.peer))
+
     def onOpen(self):
-        """
-        Connection from client is opened. Fires after opening
-        websockets handshake has been completed and we can send
-        and receive messages.
-
-        Register client in factory, so that it is able to track it.
-        Try to find conversation partner for this client.
-        """
-        self.factory.register(self)
-        self.factory.findPartner(self)
-
-    def connectionLost(self, reason):
-        """
-        Client lost connection, either disconnected or some error.
-        Remove client from list of tracked connections.
-        """
-        self.factory.unregister(self)
+        print("WebSocket connection open.")
+        self.sendMessage(json.dumps({
+            'id': 0,
+            'coords': [40.780766, -119.213912]
+        }))
 
     def onMessage(self, payload, isBinary):
-        """
-        Message sent from client, communicate this message to its conversation partner,
-        """
-        self.factory.communicate(self, payload, isBinary)
-
-
-
-class ChatRouletteFactory(WebSocketServerFactory):
-    def __init__(self, *args, **kwargs):
-        super(ChatRouletteFactory, self).__init__(*args, **kwargs)
-        self.clients = {}
-
-    def register(self, client):
-        """
-        Add client to list of managed connections.
-        """
-        self.clients[client.peer] = {"object": client, "partner": None}
-
-    def unregister(self, client):
-        """
-        Remove client from list of managed connections.
-        """
-        self.clients.pop(client.peer)
-
-    def findPartner(self, client):
-        """
-        Find chat partner for a client. Check if there any of tracked clients
-        is idle. If there is no idle client just exit quietly. If there is
-        available partner assign him/her to our client.
-        """
-        available_partners = [c for c in self.clients if c != client.peer and not self.clients[c]["partner"]]
-        if not available_partners:
-            print("no partners for {} check in a moment".format(client.peer))
+        if isBinary:
+            print("Binary message received: {} bytes".format(len(payload)))
         else:
-            partner_key = random.choice(available_partners)
-            self.clients[partner_key]["partner"] = client
-            self.clients[client.peer]["partner"] = self.clients[partner_key]["object"]
+            print("Text message received: {}".format(payload.decode('utf8')))
 
-    def communicate(self, client, payload, isBinary):
-        """
-        Broker message from client to its partner.
-        """
-        c = self.clients[client.peer]
-        if not c["partner"]:
-            c["object"].sendMessage("Sorry you dont have partner yet, check back in a minute")
-        else:
-            c["partner"].sendMessage(payload)
+        ## echo back message verbatim
+        self.sendMessage(payload, isBinary)
+
+    def onClose(self, wasClean, code, reason):
+        print("WebSocket connection closed: {}".format(reason))
+
 
 
 if __name__ == "__main__":
@@ -88,7 +43,7 @@ if __name__ == "__main__":
     # static file server seving index.html as root
     root = File(".")
 
-    factory = ChatRouletteFactory(u"ws://127.0.0.1:8080", debug=True)
+    factory = WebSocketServerFactory(u"ws://127.0.0.1:8080", debug=True)
     factory.protocol = SomeServerProtocol
     resource = WebSocketResource(factory)
     # websockets resource on "/ws" path
