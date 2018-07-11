@@ -180,5 +180,9 @@ new Vue({
             }
 
         },
+        beaconNameChanged(id, name) {
+            const beacon = this.beacons.find(beacon => beacon.id === id);
+            beacon.leafletObject.bindPopup(name)
+        }
     },
 });

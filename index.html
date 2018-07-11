@@ -31,7 +31,9 @@
                         </svg>
                     </td>
                     <td>
-                        <input v-model=beacon.name>
+                        <input v-model=beacon.name
+                            @change="beaconNameChanged(beacon.id, beacon.name)"
+                        >
                     </td>
                     <td>{{beacon.heading}}</td>
                 </tr>
