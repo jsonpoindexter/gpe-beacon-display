@@ -83,7 +83,7 @@ new Vue({
         initMap() {
             this.map = L.map('map', { zoomControl: false }).setView([40.7864, -119.2065], 14);
             this.tileLayer = L.tileLayer(
-                './static/leaflet/tiles/sat_tiles/{z0}/{x0}/{x1}/{y0}/{y1}.png', {
+                'leaflet/tiles/sat_tiles/{z0}/{x0}/{x1}/{y0}/{y1}.png', {
                     maxZoom: 18
                 }).addTo(this.map);
             L.control.zoom({position: 'bottomright'}).addTo(this.map);
@@ -111,7 +111,7 @@ new Vue({
             this.beacons.forEach((beacon) => {
                 beacon.leafletObject = L.marker(beacon.coords, {
                     icon: L.icon({
-                        iconUrl: '/static/marker/car.png',
+                        iconUrl: 'marker/car.png',
                         iconSize:     [48/2, 48/2], // size of the icon
                         iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
                     })
