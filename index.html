@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>GP&E Beacon Display</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+    <script src="vue-2.5.16/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div id="menu">
+            <table id="menuTable">
+                <tr>
+                    <th v-for="header in menu.headers"
+                        :key="header">{{header}}</th>
+                </tr>
+                <tr v-for="beacon in beacons"
+                    :key="beacon.id">
+                    <td>
+                        <input
+                            type="checkbox"
+                            v-model="beacon.active"
+                            @change="beaconChanged(beacon.id, beacon.active)"/>
+                    </td>
+                    <td>{{beacon.id}}</td>
+                    <td>
+                        <svg height="10" width="10">
+                            <circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="red" />
+                        </svg>
+                    </td>
+                    <td>
+                        <input v-model=beacon.name>
+                    </td>
+                    <td>{{beacon.heading}}</td>
+                </tr>
+            </table>
+        </div>
+        <div id="map" class="map"></div>
+    </div>
+
+    <script src="leaflet/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
