@@ -13,9 +13,35 @@
         <div id="menu">
             <table id="menuTable">
                 <tr>
-                    <th v-for="header in headers">
+                    <th v-for="header in menu.headers"
+                        :key="header">
                         {{header}}
                     </th>
+                </tr>
+                <tr v-for="beacon in beacons"
+                    :key="beacon.id">
+                    <td>
+                        <input
+                            type="checkbox"
+                            v-model="beacon.active"
+                            @change="beaconChanged(beacon.id, beacon.active)"
+                        />
+                    </td>
+                    <td>
+                        {{beacon.id}}
+                    </td>
+                    <td>
+                        <svg height="10" width="10">
+                            <circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="red" />
+                        </svg>
+                    </td>
+                    <td>
+                        <input v-model=beacon.name>
+
+                    </td>
+                    <td>
+                        {{beacon.heading}}
+                    </td>
                 </tr>
             </table>
         </div>
