@@ -4,9 +4,9 @@
     <title>GP&E Beacon Display</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css">
-    <script src="vue-2.5.16/dist/vue.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='leaflet/dist/leaflet.css')}}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}">
+    <script src="{{ url_for('static', filename='vue-2.5.16/dist/vue.js')}}"></script>
 </head>
 <body>
     <div id="app">
@@ -42,7 +42,7 @@
         <div id="map" class="map"></div>
     </div>
 
-    <script src="leaflet/dist/leaflet.js"></script>
-    <script src="app.js"></script>
+    <script src="{{ url_for('static', filename='leaflet/dist/leaflet.js')}}"></script>
+    <script src="{{ url_for('static', filename='app.js')}}"></script>
 </body>
 </html>

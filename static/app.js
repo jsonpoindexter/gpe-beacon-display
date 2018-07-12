@@ -78,7 +78,7 @@ var app = new Vue({
     mounted() {
         this.initMap();
         this.initLayers();
-        this.initSocket();
+        this.initEss();
     },
     methods: {
         initMap() {
@@ -122,50 +122,13 @@ var app = new Vue({
                 }
             });
         },
-        initSocket(){
-            function init() {}
-
-            function doConnect() {
-                websocket = new WebSocket("ws://" + window.location.host +"/ws");
-                websocket.onopen = function(evt) { onOpen(evt) };
-                websocket.onclose = function(evt) { onClose(evt) };
-                websocket.onmessage = function(evt) { onMessage(evt) };
-                websocket.onerror = function(evt) { onError(evt) };
-            }
-
-            function onOpen(evt) {
-                console.log("connected\n");
-            }
-
-            function onClose(evt) {
-                console.log("disconnected\n");
-            }
-
-            function onMessage(evt) {
-                console.log("message: " + evt.data);
-                let msg = JSON.parse(evt.data)
-                console.log(app.beacons[0].id);
-                const beacon = app.beacons.find(beacon => beacon.id === msg.id)
-                beacon.leafletObject.setLatLng(msg.coords)
-            }
-
-            function onError(evt) {
-                console.log('error: ' + evt.data);
-                websocket.close();
-            }
-
-            function doSend(message) {
-                console.log("sent: " + message);
-                websocket.send(message);
-            }
-
-            window.addEventListener("load", init, false);
-
-            function doDisconnect() {
-                websocket.close();
-            }
-
-            doConnect()
+        initEss(){
+            var source = new EventSource("{{ url_for('sse.stream') }}");
+            source.addEventListener('greeting', function(event) {
+                var data = JSON.parse(event.data);
+                // do what you want with this data
+                console.log("new message: " + data)
+            }, false);
         },
         layerChanged(layerId, active) {
             const layer = this.layers.find(layer => layer.id === layerId);
