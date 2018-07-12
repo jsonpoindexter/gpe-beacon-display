@@ -123,11 +123,13 @@ var app = new Vue({
             });
         },
         initEss(){
-            var source = new EventSource("{{ url_for('sse.stream') }}");
+            var source = new EventSource("/stream");
             source.addEventListener('greeting', function(event) {
                 var data = JSON.parse(event.data);
-                // do what you want with this data
-                console.log("new message: " + data)
+                alert("The server says " + data.message);
+            }, false);
+            source.addEventListener('error', function(event) {
+                alert("Failed to connect to event stream. Is Redis running?");
             }, false);
         },
         layerChanged(layerId, active) {
