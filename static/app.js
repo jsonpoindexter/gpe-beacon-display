@@ -32,7 +32,7 @@ var app = new Vue({
                 active: true,
                 status: 'unknown',
                 heading: null,
-                coords: [40.7645145852504, -119.21121839614607],
+                coords: [0,0],
             },
             {
                 id: 1,
@@ -41,7 +41,7 @@ var app = new Vue({
                 active: true,
                 status: 'unknown',
                 heading: null,
-                coords: [40.78309835641549, -119.23576756423887],
+                coords: [0,0],
             },
             {
                 id: 2,
@@ -50,7 +50,7 @@ var app = new Vue({
                 active: true,
                 status: 'unknown',
                 heading: null,
-                coords: [40.80652268117702, -119.22001158844188],
+                coords: [0,0],
             },
             {
                 id: 3,
@@ -59,7 +59,7 @@ var app = new Vue({
                 active: true,
                 status: 'unknown',
                 heading: null,
-                coords: [40.802409462414424, -119.18571225558496],
+                coords: [0,0],
             },
             {
                 id: 4,
@@ -68,7 +68,7 @@ var app = new Vue({
                 active: true,
                 status: 'unknown',
                 heading: null,
-                coords: [40.77644550344593, -119.18029019558828],
+                coords: [0,0],
             },
         ],
         menu: {
@@ -124,9 +124,13 @@ var app = new Vue({
         },
         initEss(){
             var source = new EventSource("/stream");
-            source.addEventListener('beacon', event => { // {"data": {"message": "Hello!"}, "type": "beacon"}
+            source.addEventListener('beacon', event => {
                 var data = JSON.parse(event.data);
-                console.log("Received beacon data: " + data.message);
+                console.log("Received beacon data: " + data);
+                const beacon = this.beacons.find(beacon => beacon.id === data.id)
+                beacon.leafletObject.setLatLng(data.coords)
+                beacon.heading = data.heading
+
             }, false);
             source.addEventListener('error', () => {
                 console.log("Failed to connect to event stream. Is Redis running?");
