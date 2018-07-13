@@ -124,7 +124,7 @@ var app = new Vue({
         },
         initEss(){
             var source = new EventSource("/stream");
-            source.addEventListener('beacon', event => { // {"data": {"message": "Hello!"}, "type": "greeting"}
+            source.addEventListener('beacon', event => { // {"data": {"message": "Hello!"}, "type": "beacon"}
                 var data = JSON.parse(event.data);
                 console.log("Received beacon data: " + data.message);
             }, false);
