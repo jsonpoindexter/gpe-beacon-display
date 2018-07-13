@@ -124,13 +124,17 @@ var app = new Vue({
         },
         initEss(){
             var source = new EventSource("/stream");
-            source.addEventListener('greeting', function(event) {
+            source.addEventListener('beacon', event => { // {"data": {"message": "Hello!"}, "type": "greeting"}
                 var data = JSON.parse(event.data);
-                alert("The server says " + data.message);
+                console.log("Received beacon data: " + data.message);
             }, false);
-            source.addEventListener('error', function(event) {
-                alert("Failed to connect to event stream. Is Redis running?");
+            source.addEventListener('error', () => {
+                console.log("Failed to connect to event stream. Is Redis running?");
             }, false);
+            source.onmessage = event =>{
+                console.log("Unkown message: " + event.data);
+            }
+
         },
         layerChanged(layerId, active) {
             const layer = this.layers.find(layer => layer.id === layerId);
