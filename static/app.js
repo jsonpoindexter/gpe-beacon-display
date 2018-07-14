@@ -30,6 +30,7 @@ var app = new Vue({
                 name: '',
                 type: 'marker',
                 active: true,
+                isSelected: false,
                 status: 'unknown',
                 heading: null,
                 coords: [0,0],
@@ -39,6 +40,7 @@ var app = new Vue({
                 name: '',
                 type: 'marker',
                 active: true,
+                isSelected: false,
                 status: 'unknown',
                 heading: null,
                 coords: [0,0],
@@ -48,6 +50,7 @@ var app = new Vue({
                 name: '',
                 type: 'marker',
                 active: true,
+                isSelected: false,
                 status: 'unknown',
                 heading: null,
                 coords: [0,0],
@@ -57,6 +60,7 @@ var app = new Vue({
                 name: '',
                 type: 'marker',
                 active: true,
+                isSelected: false,
                 status: 'unknown',
                 heading: null,
                 coords: [0,0],
@@ -66,6 +70,7 @@ var app = new Vue({
                 name: '',
                 type: 'marker',
                 active: true,
+                isSelected: false,
                 status: 'unknown',
                 heading: null,
                 coords: [0,0],
@@ -126,17 +131,17 @@ var app = new Vue({
             var source = new EventSource("/stream");
             source.addEventListener('beacon', event => {
                 var data = JSON.parse(event.data);
-                console.log("Received beacon data: " + data);
+                // console.log("Received beacon data: " + data);
                 const beacon = this.beacons.find(beacon => beacon.id === data.id)
                 beacon.leafletObject.setLatLng(data.coords)
                 beacon.heading = data.heading
 
             }, false);
             source.addEventListener('error', () => {
-                console.log("Failed to connect to event stream. Is Redis running?");
+                // console.log("Failed to connect to event stream. Is Redis running?");
             }, false);
             source.onmessage = event =>{
-                console.log("Unkown message: " + event.data);
+                // console.log("Unkown message: " + event.data);
             }
 
         },
@@ -162,6 +167,25 @@ var app = new Vue({
         beaconNameChanged(id, name) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
             beacon.leafletObject.bindPopup(name)
+        },
+        selectedChanged(id) {
+            const beacon = this.beacons.find(beacon => beacon.id === id);
+            if(beacon.active) {
+                beacon.isSelected = !beacon.isSelected
+                if(beacon.isSelected){
+                    beacon.leafletObject.setIcon(L.icon({
+                        iconUrl: 'marker/car-dodger_blue.png',
+                        iconSize:     [48/2, 48/2], // size of the icon
+                        iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
+                    }))
+                } else {
+                    beacon.leafletObject.setIcon(L.icon({
+                        iconUrl: 'marker/car.png',
+                        iconSize:     [48/2, 48/2], // size of the icon
+                        iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
+                    }))
+                }
+            }
         }
     },
 });

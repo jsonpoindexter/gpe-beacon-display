@@ -30,3 +30,9 @@ html, body, #app {
     /*display: flex;*/
     /*overflow-x: hidden;*/
 }
+
+.selected {
+    background-color: #3388ff;
+}
+
+

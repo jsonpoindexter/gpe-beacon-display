@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <title>GP&E Beacon Display</title>
     <meta charset="utf-8">
@@ -17,25 +17,26 @@
                         :key="header">{{header}}</th>
                 </tr>
                 <tr v-for="beacon in beacons"
-                    :key="beacon.id">
+                    v-bind:class = "{selected : beacon.isSelected}"
+                    v-bind:key="beacon.id">
                     <td>
                         <input
                             type="checkbox"
                             v-model="beacon.active"
                             @change="beaconChanged(beacon.id, beacon.active)"/>
                     </td>
-                    <td>{{beacon.id}}</td>
-                    <td>
+                    <td v-on:click ="selectedChanged(beacon.id)">{{beacon.id}}</td>
+                    <td v-on:click ="selectedChanged(beacon.id)">
                         <svg height="10" width="10">
                             <circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="red" ></circle>
                         </svg>
                     </td>
-                    <td>
+                    <td v-on:click ="selectedChanged(beacon.id)">
                         <input v-model=beacon.name
                             @change="beaconNameChanged(beacon.id, beacon.name)"
                         >
                     </td>
-                    <td>{{beacon.heading}}</td>
+                    <td v-on:click ="selectedChanged(beacon.id)">{{beacon.heading}}</td>
                 </tr>
             </table>
         </div>
