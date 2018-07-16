@@ -35,7 +35,13 @@ while True:
     beacon.coords[1] = beacon.coords[1] + random.uniform(-10, 10) / 10000
 
     # generate random heading
-    beacon.heading = beacon.heading + int(round(random.uniform(-15, 15)))
+    random_heading = int(round(random.uniform(-15, 15)))
+    if beacon.heading + random_heading < 0:
+        beacon.heading = 360 + random_heading
+    elif beacon.heading + random_heading > 360:
+        beacon.heading = 0 + random_heading
+    else:
+        beacon.heading = beacon.heading + random_heading
 
     r.publish("sse", json.dumps({
         'data': {
