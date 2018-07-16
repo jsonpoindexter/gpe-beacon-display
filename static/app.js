@@ -80,6 +80,11 @@ var app = new Vue({
             headers: ['Active', 'Id', 'Status', 'Name', 'Heading']
         }
     },
+    computed: {
+         doShow:() => {
+            return this.acti
+        }
+    },
     mounted() {
         this.initMap();
         this.initLayers();
@@ -145,31 +150,33 @@ var app = new Vue({
             }
 
         },
-        layerChanged(layerId, active) {
+        layerChanged(layerId) {
             const layer = this.layers.find(layer => layer.id === layerId);
             layer.features.forEach((feature) => {
-                if (active) {
+                if (layer.active) {
                     feature.leafletObject.addTo(this.map);
                 } else {
                     feature.leafletObject.removeFrom(this.map);
                 }
             });
         },
-        beaconChanged(id, active) {
+        beaconActiveChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
-            if (active) {
+            console.log("beacon active changed " + beacon.active + " " + id);
+            if (beacon.active) {
                 beacon.leafletObject.addTo(this.map);
             } else {
                 beacon.leafletObject.removeFrom(this.map);
             }
 
         },
-        beaconNameChanged(id, name) {
+        beaconNameChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
-            beacon.leafletObject.bindPopup(name)
+            beacon.leafletObject.bindPopup(beacon.name)
         },
         selectedChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
+            console.log("selectedChanged: " + id);
             if(beacon.active) {
                 beacon.isSelected = !beacon.isSelected
                 if(beacon.isSelected){
