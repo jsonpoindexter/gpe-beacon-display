@@ -17,7 +17,7 @@
                         :key="header">{{header}}</th>
                 </tr>
                 <tr v-for="beacon in beacons"
-                    v-bind:class = "{selected : beacon.isSelected}"
+                    v-bind:class = "{selected : beacon.isSelected, inactive : !beacon.active}"
                     v-on:click.stop ="selectedChanged(beacon.id)"
                     v-bind:key="beacon.id" >
                     <td>

@@ -166,6 +166,7 @@ var app = new Vue({
             if (beacon.active) {
                 beacon.leafletObject.addTo(this.map);
             } else {
+                beacon.isSelected = false
                 beacon.leafletObject.removeFrom(this.map);
             }
 

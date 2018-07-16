@@ -35,4 +35,8 @@ html, body, #app {
     background-color: #3388ff;
 }
 
+.inactive {
+    color: #999999;
+}
+
 
