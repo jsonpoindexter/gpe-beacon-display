@@ -1,3 +1,15 @@
+const icon = L.icon({
+    iconUrl: 'marker/car.png',
+    iconSize:     [48/2, 48/2], // size of the icon
+    iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
+});
+
+const selectedIcon = L.icon({
+    iconUrl: 'marker/car-dodger_blue.png',
+    iconSize:     [48/2, 48/2], // size of the icon
+    iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
+});
+
 var app = new Vue({
     el: '#app',
     data: {
@@ -162,17 +174,12 @@ var app = new Vue({
         },
         beaconActiveChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
-            console.log("beacon active changed " + beacon.active + " " + id);
             if (beacon.active) {
                 beacon.leafletObject.addTo(this.map);
             } else {
                 beacon.isSelected = false;
                 beacon.leafletObject.removeFrom(this.map);
-                beacon.leafletObject.setIcon(L.icon({
-                    iconUrl: 'marker/car.png',
-                    iconSize:     [48/2, 48/2], // size of the icon
-                    iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
-                }))
+                beacon.leafletObject.setIcon(icon)
             }
 
         },
@@ -182,21 +189,12 @@ var app = new Vue({
         },
         selectedChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
-            console.log("selectedChanged: " + beacon.isSelected + " " + id);
             if(beacon.active) {
                 beacon.isSelected = !beacon.isSelected;
                 if(beacon.isSelected){
-                    beacon.leafletObject.setIcon(L.icon({
-                        iconUrl: 'marker/car-dodger_blue.png',
-                        iconSize:     [48/2, 48/2], // size of the icon
-                        iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
-                    }))
+                    beacon.leafletObject.setIcon(selectedIcon)
                 } else {
-                    beacon.leafletObject.setIcon(L.icon({
-                        iconUrl: 'marker/car.png',
-                        iconSize:     [48/2, 48/2], // size of the icon
-                        iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
-                    }))
+                    beacon.leafletObject.setIcon(icon)
                 }
             }
         }
