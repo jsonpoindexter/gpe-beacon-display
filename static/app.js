@@ -1,5 +1,5 @@
-const icon = L.icon({
-    iconUrl: 'marker/car.png',
+const beaconIcon = L.icon({
+    iconUrl: 'marker/car-top.png',
     iconSize:     [48/2, 48/2], // size of the icon
     iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
 });
@@ -133,11 +133,8 @@ var app = new Vue({
 
             this.beacons.forEach((beacon) => {
                 beacon.leafletObject = L.marker(beacon.coords, {
-                    icon: L.icon({
-                        iconUrl: 'marker/car.png',
-                        iconSize:     [48/2, 48/2], // size of the icon
-                        iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
-                    })
+                    icon: beaconIcon,
+                    rotationAngle: 0
                 });
                 if(beacon.active) {
                     beacon.leafletObject.addTo(this.map);
@@ -151,7 +148,9 @@ var app = new Vue({
                 // console.log("Received beacon data: " + data);
                 const beacon = this.beacons.find(beacon => beacon.id === data.id)
                 beacon.leafletObject.setLatLng(data.coords)
+                beacon.leafletObject.setRotationAngle(data.heading)
                 beacon.heading = data.heading
+
 
             }, false);
             source.addEventListener('error', () => {
@@ -179,7 +178,7 @@ var app = new Vue({
             } else {
                 beacon.isSelected = false;
                 beacon.leafletObject.removeFrom(this.map);
-                beacon.leafletObject.setIcon(icon)
+                beacon.leafletObject.setIcon(beaconIcon)
             }
 
         },
@@ -194,7 +193,7 @@ var app = new Vue({
                 if(beacon.isSelected){
                     beacon.leafletObject.setIcon(selectedIcon)
                 } else {
-                    beacon.leafletObject.setIcon(icon)
+                    beacon.leafletObject.setIcon(beaconIcon)
                 }
             }
         }
