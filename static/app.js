@@ -36,7 +36,7 @@ var app = new Vue({
                 name: '',
                 type: 'marker',
                 active: true,
-                isSelected: false,
+                selected: false,
                 status: 'unknown',
                 heading: null,
             },
@@ -45,7 +45,7 @@ var app = new Vue({
                 name: '',
                 type: 'marker',
                 active: true,
-                isSelected: false,
+                selected: false,
                 status: 'unknown',
                 heading: null,
             },
@@ -54,7 +54,7 @@ var app = new Vue({
                 name: '',
                 type: 'marker',
                 active: true,
-                isSelected: false,
+                selected: false,
                 status: 'unknown',
                 heading: null,
             },
@@ -63,7 +63,7 @@ var app = new Vue({
                 name: '',
                 type: 'marker',
                 active: true,
-                isSelected: false,
+                selected: false,
                 status: 'unknown',
                 heading: null,
             },
@@ -72,7 +72,7 @@ var app = new Vue({
                 name: '',
                 type: 'marker',
                 active: true,
-                isSelected: false,
+                selected: false,
                 status: 'unknown',
                 heading: null,
             },
@@ -124,6 +124,8 @@ var app = new Vue({
                 beacon.leafletObject = L.marker([0,0], {
                     icon: beaconIcon,
                     rotationAngle: 0,
+                }).on('click', () => {
+                    this.beaconSelectedChanged(beacon.id)
                 });
                 if(beacon.active) {
                     beacon.leafletObject.addTo(this.map);
@@ -145,7 +147,7 @@ var app = new Vue({
             if (beacon.active) {
                 beacon.leafletObject.addTo(this.map);
             } else {
-                beacon.isSelected = false;
+                beacon.selected = false;
                 beacon.leafletObject.removeFrom(this.map);
                 beacon.leafletObject.setIcon(beaconIcon)
             }
@@ -155,16 +157,19 @@ var app = new Vue({
             const beacon = this.beacons.find(beacon => beacon.id === id);
             beacon.leafletObject.bindPopup(beacon.name)
         },
-        selectedChanged(id) {
+        beaconSelectedChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
             if(beacon.active) {
-                beacon.isSelected = !beacon.isSelected;
-                if(beacon.isSelected){
+                beacon.selected = !beacon.selected;
+                if(beacon.selected){
                     beacon.leafletObject.enablePermanentHighlight()
                 } else {
                     beacon.leafletObject.disablePermanentHighlight()
                 }
             }
+        },
+        handleBeaconClick(beaconId) {
+            console.log(beaconId)
         },
         nextName: function (index) {
             if (index >= this.$refs.beaconName.length-1) {
