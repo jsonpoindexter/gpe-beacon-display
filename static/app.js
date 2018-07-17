@@ -1,12 +1,12 @@
 const beaconIcon = L.icon({
     iconUrl: 'marker/car-top_heading.png',
-    // iconSize:     [48/2, 48/2], // size of the icon
-    // iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
+    iconSize:     [48, 24], // size of the icon
+    iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
 });
 
 const selectedIcon = L.icon({
     iconUrl: 'marker/car-dodger_blue.png',
-    iconSize:     [48/2, 48/2], // size of the icon
+    iconSize:     [24, 48], // size of the icon
     iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
 });
 
@@ -196,6 +196,14 @@ var app = new Vue({
                     beacon.leafletObject.setIcon(beaconIcon)
                 }
             }
-        }
+        },
+        nextName: function (index) {
+            if (index >= this.$refs.beaconName.length-1) {
+                index = 0
+            } else {
+                index = index + 1
+            }
+            this.$refs.beaconName[index].focus();
+       }
     },
 });

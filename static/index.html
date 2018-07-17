@@ -19,7 +19,7 @@
                     <th v-for="header in menu.headers"
                         :key="header">{{header}}</th>
                 </tr>
-                <tr v-for="beacon in beacons"
+                <tr v-for="(beacon, index) in beacons"
                     v-bind:class = "{selected : beacon.isSelected, inactive : !beacon.active}"
                     v-on:click.stop ="selectedChanged(beacon.id)"
                     v-bind:key="beacon.id" >
@@ -39,8 +39,10 @@
                     </td>
                     <td>
                         <input
+                            ref="beaconName"
                             v-model=beacon.name
                             @change="beaconNameChanged(beacon.id)"
+                            @keyup.enter="nextName(index)"
                         >
                     </td>
                     <td>{{beacon.heading}}</td>
