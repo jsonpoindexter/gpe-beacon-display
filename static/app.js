@@ -183,17 +183,17 @@ var app = new Vue({
             let source = new EventSource("/stream");
             source.addEventListener('beacon', event => {
                 let data = JSON.parse(event.data);
-                // console.log("Received beacon data: " + data);
-                const beacon = this.beacons.find(beacon => beacon.id === data.id)
-                beacon.leafletObject.setLatLng(data.coords)
-                // beacon.leafletObject.setRotationAngle(data.heading)
+                console.debug("Received beacon data: " + data);
+                const beacon = this.beacons.find(beacon => beacon.id === data.id);
+                beacon.leafletObject.setLatLng(data.coords);
+                beacon.leafletObject.setRotationAngle(data.heading);
                 beacon.heading = data.heading
             }, false);
             source.addEventListener('error', () => {
-                // console.log("Failed to connect to event stream. Is Redis running?");
+                console.debug("Failed to connect to event stream. Is Redis running?");
             }, false);
             source.onmessage = event =>{
-                // console.log("Unkown message: " + event.data);
+                console.debug("Unkown/Unhandled message: " + event.data);
             }
 
         },
