@@ -1,7 +1,7 @@
 const beaconIcon = L.icon({
-    iconUrl: 'marker/car-top.png',
-    iconSize:     [48/2, 48/2], // size of the icon
-    iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
+    iconUrl: 'marker/car-top_heading.png',
+    // iconSize:     [48/2, 48/2], // size of the icon
+    // iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
 });
 
 const selectedIcon = L.icon({
