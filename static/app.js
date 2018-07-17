@@ -4,12 +4,6 @@ const beaconIcon = L.icon({
     iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
 });
 
-const selectedIcon = L.icon({
-    iconUrl: 'marker/car-dodger_blue.png',
-    iconSize:     [24, 48], // size of the icon
-    iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
-});
-
 var app = new Vue({
     el: '#app',
     data: {
@@ -18,13 +12,13 @@ var app = new Vue({
         layers: [
             {
                 id: 0,
-                name: 'Polygons',
-                active: true,
+                name: 'Misc',
                 features: [
                     {
                         id: 0,
                         name: 'Trash Fence',
                         type: 'polygon',
+                        active: true,
                         coords: [[40.7645145852504, -119.21121839614607],
                             [40.78309835641549, -119.23576756423887],
                             [40.80652268117702, -119.22001158844188],
@@ -45,7 +39,6 @@ var app = new Vue({
                 isSelected: false,
                 status: 'unknown',
                 heading: null,
-                coords: [0,0],
             },
             {
                 id: 1,
@@ -55,7 +48,6 @@ var app = new Vue({
                 isSelected: false,
                 status: 'unknown',
                 heading: null,
-                coords: [0,0],
             },
             {
                 id: 2,
@@ -65,7 +57,6 @@ var app = new Vue({
                 isSelected: false,
                 status: 'unknown',
                 heading: null,
-                coords: [0,0],
             },
             {
                 id: 3,
@@ -75,7 +66,6 @@ var app = new Vue({
                 isSelected: false,
                 status: 'unknown',
                 heading: null,
-                coords: [0,0],
             },
             {
                 id: 4,
@@ -85,7 +75,6 @@ var app = new Vue({
                 isSelected: false,
                 status: 'unknown',
                 heading: null,
-                coords: [0,0],
             },
         ],
         menu: {
@@ -116,7 +105,7 @@ var app = new Vue({
                 const markerFeatures = layer.features.filter(feature => feature.type === 'marker');
                 markerFeatures.forEach((feature) => {
                     feature.leafletObject = L.marker(feature.coords).bindPopup(feature.name);
-                    if(layer.active) {
+                    if(feature.active) {
                         feature.leafletObject.addTo(this.map);
                     }
                 });
@@ -125,41 +114,21 @@ var app = new Vue({
                 polygonFeatures.forEach((feature) => {
                     feature.leafletObject = L.polygon(feature.coords)
                         .bindPopup(feature.name);
-                    if(layer.active) {
+                    if(feature.active) {
                         feature.leafletObject.addTo(this.map);
                     }
                 });
             });
 
             this.beacons.forEach((beacon) => {
-                beacon.leafletObject = L.marker(beacon.coords, {
+                beacon.leafletObject = L.marker([0,0], {
                     icon: beaconIcon,
-                    rotationAngle: 0
+                    rotationAngle: 0,
                 });
                 if(beacon.active) {
                     beacon.leafletObject.addTo(this.map);
                 }
             });
-        },
-        initEss(){
-            var source = new EventSource("/stream");
-            source.addEventListener('beacon', event => {
-                var data = JSON.parse(event.data);
-                // console.log("Received beacon data: " + data);
-                const beacon = this.beacons.find(beacon => beacon.id === data.id)
-                beacon.leafletObject.setLatLng(data.coords)
-                beacon.leafletObject.setRotationAngle(data.heading)
-                beacon.heading = data.heading
-
-
-            }, false);
-            source.addEventListener('error', () => {
-                // console.log("Failed to connect to event stream. Is Redis running?");
-            }, false);
-            source.onmessage = event =>{
-                // console.log("Unkown message: " + event.data);
-            }
-
         },
         layerChanged(layerId) {
             const layer = this.layers.find(layer => layer.id === layerId);
@@ -191,9 +160,9 @@ var app = new Vue({
             if(beacon.active) {
                 beacon.isSelected = !beacon.isSelected;
                 if(beacon.isSelected){
-                    beacon.leafletObject.setIcon(selectedIcon)
+                    beacon.leafletObject.enablePermanentHighlight()
                 } else {
-                    beacon.leafletObject.setIcon(beaconIcon)
+                    beacon.leafletObject.disablePermanentHighlight()
                 }
             }
         },
@@ -204,6 +173,24 @@ var app = new Vue({
                 index = index + 1
             }
             this.$refs.beaconName[index].focus();
-       }
+        },
+        initEss(){
+            let source = new EventSource("/stream");
+            source.addEventListener('beacon', event => {
+                let data = JSON.parse(event.data);
+                // console.log("Received beacon data: " + data);
+                const beacon = this.beacons.find(beacon => beacon.id === data.id)
+                beacon.leafletObject.setLatLng(data.coords)
+                // beacon.leafletObject.setRotationAngle(data.heading)
+                beacon.heading = data.heading
+            }, false);
+            source.addEventListener('error', () => {
+                // console.log("Failed to connect to event stream. Is Redis running?");
+            }, false);
+            source.onmessage = event =>{
+                // console.log("Unkown message: " + event.data);
+            }
+
+        },
     },
 });
