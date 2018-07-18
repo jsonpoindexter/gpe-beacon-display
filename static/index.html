@@ -33,9 +33,9 @@
                     </td>
                     <td>{{beacon.id}}</td>
                     <td>
-                        <svg height="10" width="10">
-                            <circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="red" ></circle>
-                        </svg>
+                        <div
+                            v-bind:class="beacon.status">
+                        </div>
                     </td>
                     <td>
                         <input
@@ -55,6 +55,7 @@
     <script src="leaflet/dist/leaflet.js"></script>
     <script src="leaflet/dist/leaflet.marker.highlight/index.js"></script>
     <script src="leaflet/dist/leaflet.rotatedMarker.js"></script>
+    <script src="constants.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

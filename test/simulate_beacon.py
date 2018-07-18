@@ -47,7 +47,8 @@ while True:
         'data': {
             'id': beacon.id,
             'coords': beacon.coords,
-            'heading': beacon.heading
+            'heading': beacon.heading,
+            'timestamp':  round(time.time()*1000),
         },
         'type': 'beacon'
     }))

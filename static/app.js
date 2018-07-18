@@ -1,9 +1,3 @@
-const beaconIcon = L.icon({
-    iconUrl: 'marker/car-top_heading.png',
-    iconSize:     [48, 24], // size of the icon
-    iconAnchor:   [24/2, 24/2], // point of the icon which will correspond to marker's location
-});
-
 var app = new Vue({
     el: '#app',
     data: {
@@ -37,8 +31,9 @@ var app = new Vue({
                 type: 'marker',
                 active: true,
                 selected: false,
-                status: 'unknown',
+                status: 'circle-grey',
                 heading: null,
+                timestamp: null,
             },
             {
                 id: 1,
@@ -46,8 +41,9 @@ var app = new Vue({
                 type: 'marker',
                 active: true,
                 selected: false,
-                status: 'unknown',
+                status: 'circle-grey',
                 heading: null,
+                timestamp: null,
             },
             {
                 id: 2,
@@ -55,8 +51,9 @@ var app = new Vue({
                 type: 'marker',
                 active: true,
                 selected: false,
-                status: 'unknown',
+                status: 'circle-grey',
                 heading: null,
+                timestamp: null,
             },
             {
                 id: 3,
@@ -64,8 +61,9 @@ var app = new Vue({
                 type: 'marker',
                 active: true,
                 selected: false,
-                status: 'unknown',
+                status: 'circle-grey',
                 heading: null,
+                timestamp: null,
             },
             {
                 id: 4,
@@ -73,8 +71,9 @@ var app = new Vue({
                 type: 'marker',
                 active: true,
                 selected: false,
-                status: 'unknown',
+                status: 'circle-grey',
                 heading: null,
+                timestamp: null,
             },
         ],
         menu: {
@@ -90,6 +89,7 @@ var app = new Vue({
         this.initMap();
         this.initLayers();
         this.initEss();
+        this.time();
     },
     methods: {
         initMap() {
@@ -150,6 +150,7 @@ var app = new Vue({
                 beacon.selected = false;
                 beacon.leafletObject.removeFrom(this.map);
                 beacon.leafletObject.setIcon(beaconIcon)
+                beacon.status = 'circle-grey'
             }
 
         },
@@ -168,9 +169,6 @@ var app = new Vue({
                 }
             }
         },
-        handleBeaconClick(beaconId) {
-            console.log(beaconId)
-        },
         nextName: function (index) {
             if (index >= this.$refs.beaconName.length-1) {
                 index = 0
@@ -187,7 +185,8 @@ var app = new Vue({
                 const beacon = this.beacons.find(beacon => beacon.id === data.id);
                 beacon.leafletObject.setLatLng(data.coords);
                 beacon.leafletObject.setRotationAngle(data.heading);
-                beacon.heading = data.heading
+                beacon.heading = data.heading;
+                beacon.timestamp = data.timestamp;
             }, false);
             source.addEventListener('error', () => {
                 console.debug("Failed to connect to event stream. Is Redis running?");
@@ -197,5 +196,17 @@ var app = new Vue({
             }
 
         },
+        time() {
+            this.beacons.forEach((beacon) => {
+                if(beacon.active && beacon.timestamp != null){
+                    let timediff = Date.now() - beacon.timestamp;
+                    if(timediff > status_red) beacon.status = 'circle-red';
+                    else if(timediff > status_yellow) beacon.status = 'circle-yellow';
+                    else beacon.status = 'circle-green';
+                }
+
+            });
+            setTimeout(this.time, 1000)
+        }
     },
 });

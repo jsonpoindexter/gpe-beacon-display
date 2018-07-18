@@ -18,21 +18,56 @@ html, body, #app {
     left: 5px;
     background-color: #f0f0f0;
     z-index: 9998;
-    /*transition: width 0.8s ease;*/
-    /*border-radius: 10px;*/
+    padding: 20px;
+    opacity: 0.75;
 }
 
 #menuTable {
     text-align: center;
     padding: 20px;
     width: 100%;
-    /*transition: width 0.8s ease;*/
-    /*display: flex;*/
-    /*overflow-x: hidden;*/
+    border-collapse:collapse;
+}
+
+.circle-grey {
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background-color: grey;
+    margin: auto;
+    border: .5px solid;
+}
+
+.circle-red {
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    margin: auto;
+    border: .5px solid;
+}
+
+.circle-yellow {
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background-color: yellow;
+    margin: auto;
+    border: .5px solid;
+}
+
+.circle-green {
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background-color: green;
+    margin: auto;
+    border: .5px solid;
 }
 
 .selected {
     background-color: #3388ff;
+    border-radius: 5px;
 }
 
 .inactive {
