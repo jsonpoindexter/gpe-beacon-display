@@ -197,6 +197,7 @@ var app = new Vue({
 
         },
         time() {
+            // TODO: There is probably a more vuejs/efficient way to do this
             this.beacons.forEach((beacon) => {
                 if(beacon.active && beacon.timestamp != null){
                     let timediff = Date.now() - beacon.timestamp;
