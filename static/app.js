@@ -34,6 +34,7 @@ var app = new Vue({
                 status: 'circle-grey',
                 heading: null,
                 timestamp: null,
+                elapseTime: null,
             },
             {
                 id: 1,
@@ -44,6 +45,7 @@ var app = new Vue({
                 status: 'circle-grey',
                 heading: null,
                 timestamp: null,
+                elapseTime: null,
             },
             {
                 id: 2,
@@ -54,6 +56,7 @@ var app = new Vue({
                 status: 'circle-grey',
                 heading: null,
                 timestamp: null,
+                elapseTime: null,
             },
             {
                 id: 3,
@@ -64,6 +67,7 @@ var app = new Vue({
                 status: 'circle-grey',
                 heading: null,
                 timestamp: null,
+                elapseTime: null,
             },
             {
                 id: 4,
@@ -74,6 +78,7 @@ var app = new Vue({
                 status: 'circle-grey',
                 heading: null,
                 timestamp: null,
+                elapseTime: null,
             },
         ],
         menu: {
@@ -151,6 +156,7 @@ var app = new Vue({
                 beacon.leafletObject.removeFrom(this.map);
                 beacon.leafletObject.setIcon(beaconIcon)
                 beacon.status = 'circle-grey'
+                beacon.elapseTime = null
             }
 
         },
@@ -200,14 +206,14 @@ var app = new Vue({
             // TODO: There is probably a more vuejs/efficient way to do this
             this.beacons.forEach((beacon) => {
                 if(beacon.active && beacon.timestamp != null){
-                    let timediff = Date.now() - beacon.timestamp;
-                    if(timediff > status_red) beacon.status = 'circle-red';
-                    else if(timediff > status_yellow) beacon.status = 'circle-yellow';
+                    beacon.elapseTime = (Date.now() - beacon.timestamp) + 'ms';
+                    if(beacon.elapseTime > status_red) beacon.status = 'circle-red';
+                    else if(beacon.elapseTime > status_yellow) beacon.status = 'circle-yellow';
                     else beacon.status = 'circle-green';
                 }
 
             });
             setTimeout(this.time, 1000)
-        }
+        },
     },
 });

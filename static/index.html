@@ -34,7 +34,8 @@
                     <td>{{beacon.id}}</td>
                     <td>
                         <div
-                            v-bind:class="beacon.status">
+                            v-bind:class="beacon.status"
+                            v-bind:title="beacon.elapseTime">
                         </div>
                     </td>
                     <td>
