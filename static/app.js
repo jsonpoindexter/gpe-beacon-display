@@ -215,5 +215,9 @@ var app = new Vue({
             });
             setTimeout(this.time, 1000)
         },
+        update: _.debounce(function (e) {
+            console.log(e.target.value)
+        }, 300)
+
     },
 });

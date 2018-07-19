@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="normalize.css">
     <script src="vue-2.5.16/dist/vue.js"></script>
+    <script src="lodash-4.17.10/lodash.js"></script>
 
 </head>
 <body>
@@ -44,7 +45,7 @@
                             v-model=beacon.name
                             @change="beaconNameChanged(beacon.id)"
                             @keyup.enter="nextName(index)"
-                        >
+                            @input="update">
                     </td>
                     <td>{{beacon.heading}}</td>
                 </tr>
