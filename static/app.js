@@ -1,3 +1,16 @@
+function msToTime(duration) {
+    let milliseconds = parseInt((duration % 1000) / 100),
+        seconds = parseInt((duration / 1000) % 60),
+        minutes = parseInt((duration / (1000 * 60)) % 60),
+        hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+    return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+}
+
 var app = new Vue({
     el: '#app',
     data: {
@@ -206,7 +219,7 @@ var app = new Vue({
             // TODO: There is probably a more vuejs/efficient way to do this
             this.beacons.forEach((beacon) => {
                 if(beacon.active && beacon.timestamp != null){
-                    beacon.elapseTime = (Date.now() - beacon.timestamp) + 'ms';
+                    beacon.elapseTime = msToTime(Date.now() - beacon.timestamp) + 'ms';
                     if(beacon.elapseTime > status_red) beacon.status = 'circle-red';
                     else if(beacon.elapseTime > status_yellow) beacon.status = 'circle-yellow';
                     else beacon.status = 'circle-green';
