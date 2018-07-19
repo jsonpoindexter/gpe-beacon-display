@@ -216,8 +216,15 @@ var app = new Vue({
             setTimeout(this.time, 1000)
         },
         update: _.debounce(function (e) {
-            console.log(e.target.value)
+            let body = {
+                "label": e.target.value,
+                "id": 0,
+                "active": true
+            };
+            this.$http.post('/beacon/label', body).then(response => {
+            }, response => {
+                console.log(response.body);
+            });
         }, 300)
-
     },
 });

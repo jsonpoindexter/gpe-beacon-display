@@ -22,7 +22,7 @@ def label():
             "type": "object",
             "properties": {
                 "label": {"type": "string"},
-                "id": {"type": "string"},
+                "id": {"type": "number"},
                 "active": {"type": "boolean"}
             },
             "required": ["label", "id", "active"]
@@ -44,6 +44,8 @@ def label():
         except:
             print(sys.exc_info()[0])
             return "Unexpected error", 422
+
+        app.logger.info('Beacon label received %s', json.dumps(body))
 
         return Response(json.dumps(body), status=200, mimetype='application/json')
     else:
