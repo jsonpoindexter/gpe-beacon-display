@@ -74,4 +74,14 @@ html, body, #app {
     color: #999999;
 }
 
+[tooltip]:before {
+    position : absolute;
+    content : attr(tooltip);
+    opacity : 0;
+}
 
+[tooltip]:hover:before {
+    opacity : 1;
+    padding: 2px;
+    background-color: grey;
+}
