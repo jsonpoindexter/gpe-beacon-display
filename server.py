@@ -1,14 +1,17 @@
 # !/usr/bin/env python
+import json
+import sys
+import redis
+
 from flask import Flask, Response, request
 from flask_sse import sse
 from jsonschema import validate, ValidationError, SchemaError
-import sys, json
 
+redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 app = Flask(__name__, static_url_path='')
 app.config["REDIS_URL"] = "redis://localhost"
 app.register_blueprint(sse, url_prefix='/stream')
-
 
 @app.route('/')
 def root():
@@ -18,7 +21,7 @@ def root():
 @app.route('/beacon/label', methods=['GET', 'POST'])
 def label():
     if request.method == 'POST':
-        BODY = {
+        body = {
             "type": "object",
             "properties": {
                 "label": {"type": "string"},
@@ -28,13 +31,13 @@ def label():
             "required": ["label", "id", "active"]
         }
 
-        body = request.get_json(silent=True)
+        req_body = request.get_json(silent=True)
 
-        if body is None:
+        if req_body is None:
             return "Body is None", 422
 
         try:
-          validate(body, BODY)
+            validate(req_body, body)
         except ValidationError:
             print(sys.exc_info()[0])
             return "ValidationError", 422
@@ -49,6 +52,8 @@ def label():
 
         return Response(json.dumps(body), status=200, mimetype='application/json')
     else:
+        beacons = redis.hgetall()
+        print("allredis %u" % allreds)
         return "", 200
 
 

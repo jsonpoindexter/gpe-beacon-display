@@ -5,8 +5,8 @@ import json
 
 max_beacons = 5
 
-r = redis.StrictRedis(host='localhost', port=6379, db=0)
-r.pubsub()
+redis = redis.StrictRedis(host='localhost', port=6379, db=0)
+redis.pubsub()
 
 beacons = []
 
@@ -43,7 +43,14 @@ while True:
     else:
         beacon.heading = beacon.heading + random_heading
 
-    r.publish("sse", json.dumps({
+    redis.hset("beacons", beacon.id, {
+        'id': beacon.id,
+        'coords': beacon.coords,
+        'heading': beacon.heading
+
+    })
+
+    redis.publish("sse", json.dumps({
         'data': {
             'id': beacon.id,
             'coords': beacon.coords,
@@ -52,5 +59,6 @@ while True:
         },
         'type': 'beacon'
     }))
+
 
     time.sleep(.5)
