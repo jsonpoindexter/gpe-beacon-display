@@ -29,7 +29,7 @@
                         <input
                             type="checkbox"
                             v-model="beacon.active"
-                            @change="beaconActiveChanged(beacon.id)"
+                            v-on:change="beaconActiveChanged(beacon.id)"
                             v-on:click.stop=""
                         />
                     </td>
@@ -41,9 +41,9 @@
                         <input
                             ref="beaconName"
                             v-model=beacon.name
-                            @change="beaconNameChanged(beacon.id)"
-                            @keyup.enter="nextName(index)"
-                            @input="update">
+                            v-on:change="beaconNameChanged(beacon.id)"
+                            v-on:keyup.enter="nextName(index)"
+                            v-on:input="beaconInputDebounce(beacon.id)">
                     </td>
                     <td>{{beacon.heading}}</td>
                 </tr>

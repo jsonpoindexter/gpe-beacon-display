@@ -11,6 +11,18 @@ function msToTime(duration) {
     return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
 }
 
+let sendLabel = _.debounce(function(beacon) {
+    let body = {
+        "label": beacon.name,
+        "id": beacon.id,
+        "active": beacon.active
+    };
+    this.app.$http.post('/beacon/label', body).then(response => {
+    }, response => {
+        console.log(response.body);
+    });
+}, 300)
+
 var app = new Vue({
     el: '#app',
     data: {
@@ -98,11 +110,6 @@ var app = new Vue({
             headers: ['Active', 'Id', 'Status', 'Name', 'Heading']
         }
     },
-    computed: {
-         doShow:() => {
-            return this.acti
-        }
-    },
     mounted() {
         this.initMap();
         this.initLayers();
@@ -176,6 +183,11 @@ var app = new Vue({
         beaconNameChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
             beacon.leafletObject.bindPopup(beacon.name)
+
+        },
+        beaconInputDebounce(id) {
+            const beacon = this.beacons.find(beacon => beacon.id === id);
+            sendLabel(beacon)
         },
         beaconSelectedChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
@@ -228,16 +240,5 @@ var app = new Vue({
             });
             setTimeout(this.time, 1000)
         },
-        update: _.debounce(function (e) {
-            let body = {
-                "label": e.target.value,
-                "id": 0,
-                "active": true
-            };
-            this.$http.post('/beacon/label', body).then(response => {
-            }, response => {
-                console.log(response.body);
-            });
-        }, 300)
     },
 });
