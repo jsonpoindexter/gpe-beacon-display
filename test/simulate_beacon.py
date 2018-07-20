@@ -60,5 +60,4 @@ while True:
         'type': 'beacon'
     }))
 
-
     time.sleep(.5)

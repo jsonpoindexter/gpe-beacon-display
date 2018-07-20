@@ -48,13 +48,16 @@ def label():
             print(sys.exc_info()[0])
             return "Unexpected error", 422
 
-        app.logger.info('Beacon label received %s', json.dumps(body))
-
         return Response(json.dumps(body), status=200, mimetype='application/json')
-    else:
-        beacons = redis.hgetall()
-        print("allredis %u" % allreds)
-        return "", 200
+
+
+@app.route('/beacons', methods=['GET'])
+def beacons():
+    beacon_array = []
+    beacons = redis.hgetall("beacons")
+    for beacon_id, beacon in beacons.items():
+        beacon_array.append(json.loads(beacon.decode('utf8').replace("'", '"')))
+    return Response(json.dumps(beacon_array), status=200, mimetype='application/json')
 
 
 if __name__ == '__main__':
