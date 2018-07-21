@@ -13,7 +13,7 @@ function msToTime(duration) {
 
 let sendLabel = _.debounce(function(beacon) {
     let body = {
-        "label": beacon.name,
+        "label": beacon.label,
         "id": beacon.id,
         "active": beacon.active
     };
@@ -21,7 +21,7 @@ let sendLabel = _.debounce(function(beacon) {
     }, response => {
         console.log(response.body);
     });
-}, 300)
+}, 300);
 
 var app = new Vue({
     el: '#app',
@@ -49,74 +49,42 @@ var app = new Vue({
             },
 
         ],
-        beacons: [
-            {
-                id: 0,
-                name: '',
-                type: 'marker',
-                active: true,
-                selected: false,
-                status: 'circle-grey',
-                heading: null,
-                timestamp: null,
-                elapseTime: null,
-            },
-            {
-                id: 1,
-                name: '',
-                type: 'marker',
-                active: true,
-                selected: false,
-                status: 'circle-grey',
-                heading: null,
-                timestamp: null,
-                elapseTime: null,
-            },
-            {
-                id: 2,
-                name: '',
-                type: 'marker',
-                active: true,
-                selected: false,
-                status: 'circle-grey',
-                heading: null,
-                timestamp: null,
-                elapseTime: null,
-            },
-            {
-                id: 3,
-                name: '',
-                type: 'marker',
-                active: true,
-                selected: false,
-                status: 'circle-grey',
-                heading: null,
-                timestamp: null,
-                elapseTime: null,
-            },
-            {
-                id: 4,
-                name: '',
-                type: 'marker',
-                active: true,
-                selected: false,
-                status: 'circle-grey',
-                heading: null,
-                timestamp: null,
-                elapseTime: null,
-            },
-        ],
+        beacons: [],
         menu: {
             headers: ['Active', 'Id', 'Status', 'Name', 'Heading']
         }
     },
+    beforeMount(){
+
+    },
     mounted() {
-        this.initMap();
-        this.initLayers();
-        this.initEss();
-        this.time();
+        this.initBeacons();
     },
     methods: {
+        initBeacons(){
+            this.$http.get('/beacons').then(response => {
+                response.body.forEach((beacon) => {
+                    this.beacons.push({
+                        id: beacon.id,
+                        coords: beacon.coords,
+                        label: beacon.label,
+                        timestamp: beacon.timestamp,
+                        heading: beacon.heading,
+                        active: true,
+                        selected: false,
+                        status: 'circle-grey',
+                        elapseTime: null,
+                        leafletObject: null
+                    })
+                });
+                this.initMap();
+                this.initLayers();
+                this.initEss();
+                this.time();
+            }, error => {
+                console.error(error);
+            });
+        },
         initMap() {
             this.map = L.map('map', { zoomControl: false }).setView([40.7864, -119.2065], 14);
             this.tileLayer = L.tileLayer(
@@ -126,6 +94,7 @@ var app = new Vue({
             L.control.zoom({position: 'bottomright'}).addTo(this.map);
         },
         initLayers() {
+            console.log("initlayers")
             this.layers.forEach((layer) => {
                 const markerFeatures = layer.features.filter(feature => feature.type === 'marker');
                 markerFeatures.forEach((feature) => {
@@ -144,9 +113,8 @@ var app = new Vue({
                     }
                 });
             });
-
             this.beacons.forEach((beacon) => {
-                beacon.leafletObject = L.marker([0,0], {
+                beacon.leafletObject = L.marker([beacon.coords[0],beacon.coords[1]], {
                     icon: beaconIcon,
                     rotationAngle: 0,
                 }).on('click', () => {
@@ -180,9 +148,9 @@ var app = new Vue({
             }
 
         },
-        beaconNameChanged(id) {
+        beaconLabelChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
-            beacon.leafletObject.bindPopup(beacon.name)
+            beacon.leafletObject.bindPopup(beacon.label)
 
         },
         beaconInputDebounce(id) {
@@ -200,24 +168,29 @@ var app = new Vue({
                 }
             }
         },
-        nextName: function (index) {
-            if (index >= this.$refs.beaconName.length-1) {
+        nextLabel: function (index) {
+            if (index >= this.$refs.beaconLabel.length-1) {
                 index = 0
             } else {
                 index = index + 1
             }
-            this.$refs.beaconName[index].focus();
+            this.$refs.beaconLabel[index].focus();
         },
         initEss(){
             let source = new EventSource("/stream");
             source.addEventListener('beacon', event => {
                 let data = JSON.parse(event.data);
-                console.debug("Received beacon data: " + data);
+                console.debug("Received beacon data");
+                console.debug(data);
                 const beacon = this.beacons.find(beacon => beacon.id === data.id);
-                beacon.leafletObject.setLatLng(data.coords);
-                beacon.leafletObject.setRotationAngle(data.heading);
-                beacon.heading = data.heading;
-                beacon.timestamp = data.timestamp;
+                if(beacon != null) {
+                    beacon.leafletObject.setLatLng(data.coords);
+                    beacon.leafletObject.setRotationAngle(data.heading);
+                    beacon.heading = data.heading;
+                    beacon.timestamp = data.timestamp;
+                } else {
+                    // TODO: add new beacons here
+                }
             }, false);
             source.addEventListener('error', () => {
                 console.debug("Failed to connect to event stream. Is Redis running?");

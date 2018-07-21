@@ -3,7 +3,7 @@
 <head>
     <title>GP&E Beacon Display</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta label="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="leaflet/dist/leaflet.marker.highlight/index.css">
     <link rel="stylesheet" href="styles.css">
@@ -39,10 +39,10 @@
                     </td>
                     <td>
                         <input
-                            ref="beaconName"
-                            v-model=beacon.name
-                            v-on:change="beaconNameChanged(beacon.id)"
-                            v-on:keyup.enter="nextName(index)"
+                            ref="beaconLabel"
+                            v-model=beacon.label
+                            v-on:change="beaconLabelChanged(beacon.id)"
+                            v-on:keyup.enter="nextLabel(index)"
                             v-on:input="beaconInputDebounce(beacon.id)">
                     </td>
                     <td>{{beacon.heading}}</td>

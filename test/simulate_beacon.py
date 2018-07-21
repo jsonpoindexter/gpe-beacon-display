@@ -46,8 +46,9 @@ while True:
     redis.hset("beacons", beacon.id, {
         'id': beacon.id,
         'coords': beacon.coords,
-        'heading': beacon.heading
-
+        'label': '',
+        'heading': beacon.heading,
+        'timestamp':  round(time.time()*1000),
     })
 
     redis.publish("sse", json.dumps({

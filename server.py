@@ -6,8 +6,25 @@ import redis
 from flask import Flask, Response, request
 from flask_sse import sse
 from jsonschema import validate, ValidationError, SchemaError
+from logging.config import dictConfig
 
 redis = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
 
 app = Flask(__name__, static_url_path='')
 app.config["REDIS_URL"] = "redis://localhost"
