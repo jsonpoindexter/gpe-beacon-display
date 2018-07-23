@@ -15,7 +15,6 @@ let sendLabel = _.debounce(function(beacon) {
     let body = {
         "label": beacon.label,
         "id": beacon.id,
-        "active": beacon.active
     };
     this.app.$http.post('/beacon/label', body).then(response => {
     }, response => {
@@ -70,7 +69,8 @@ var app = new Vue({
                         label: beacon.label,
                         timestamp: beacon.timestamp,
                         heading: beacon.heading,
-                        active: true,
+                        label: beacon.label,
+                        active: beacon.active,
                         selected: false,
                         status: 'circle-grey',
                         elapseTime: null,
@@ -146,6 +146,14 @@ var app = new Vue({
                 beacon.status = 'circle-grey'
                 beacon.elapseTime = null
             }
+            let body = {
+                "id": beacon.id,
+                "active": beacon.active
+            };
+            this.$http.post('/beacon/active', body).then(response => {
+            }, response => {
+                console.log(response.body);
+            });
 
         },
         beaconLabelChanged(id) {
@@ -178,7 +186,7 @@ var app = new Vue({
         },
         initEss(){
             let source = new EventSource("/stream");
-            source.addEventListener('beacon', event => {
+            source.addEventListener('beacon:message', event => {
                 let data = JSON.parse(event.data);
                 console.debug("Received beacon data");
                 console.debug(data);
@@ -188,6 +196,37 @@ var app = new Vue({
                     beacon.leafletObject.setRotationAngle(data.heading);
                     beacon.heading = data.heading;
                     beacon.timestamp = data.timestamp;
+                } else {
+                    // TODO: add new beacons here
+                }
+            }, false);
+            source.addEventListener('beacon:label', event => {
+                let data = JSON.parse(event.data);
+                console.debug("Received beacon data");
+                console.debug(data);
+                const beacon = this.beacons.find(beacon => beacon.id === data.id);
+                if(beacon != null) {
+                    beacon.label = data.label
+                } else {
+                    // TODO: add new beacons here
+                }
+            }, false);
+            source.addEventListener('beacon:active', event => {
+                let data = JSON.parse(event.data);
+                console.debug("Received beacon data");
+                console.debug(data);
+                const beacon = this.beacons.find(beacon => beacon.id === data.id);
+                if(beacon != null) {
+                    beacon.active = data.active
+                    if (beacon.active) {
+                        beacon.leafletObject.addTo(this.map);
+                    } else {
+                        beacon.selected = false;
+                        beacon.leafletObject.removeFrom(this.map);
+                        beacon.leafletObject.setIcon(beaconIcon)
+                        beacon.status = 'circle-grey'
+                        beacon.elapseTime = null
+                    }
                 } else {
                     // TODO: add new beacons here
                 }

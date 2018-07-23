@@ -43,22 +43,25 @@ while True:
     else:
         beacon.heading = beacon.heading + random_heading
 
+    # Save redis data for flask/frontend API GET /beacons
     redis.hset("beacons", beacon.id, {
         'id': beacon.id,
         'coords': beacon.coords,
-        'label': '',
         'heading': beacon.heading,
-        'timestamp':  round(time.time()*1000),
+        'timestamp': round(time.time() * 1000),
     })
 
+    # Publish beacon data for flask/frontend SSE
     redis.publish("sse", json.dumps({
         'data': {
             'id': beacon.id,
             'coords': beacon.coords,
             'heading': beacon.heading,
-            'timestamp':  round(time.time()*1000),
+            'timestamp': round(time.time() * 1000),
         },
-        'type': 'beacon'
+        'type': 'beacon:message'
     }))
+
+    # Set up pubsub for beacon label/active
 
     time.sleep(.5)

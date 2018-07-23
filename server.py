@@ -30,6 +30,7 @@ app = Flask(__name__, static_url_path='')
 app.config["REDIS_URL"] = "redis://localhost"
 app.register_blueprint(sse, url_prefix='/stream')
 
+
 @app.route('/')
 def root():
     return app.send_static_file('index.html')
@@ -43,12 +44,13 @@ def label():
             "properties": {
                 "label": {"type": "string"},
                 "id": {"type": "number"},
-                "active": {"type": "boolean"}
             },
-            "required": ["label", "id", "active"]
+            "required": ["label", "id"]
         }
 
         req_body = request.get_json(silent=True)
+
+        print(req_body)
 
         if req_body is None:
             return "Body is None", 422
@@ -65,7 +67,63 @@ def label():
             print(sys.exc_info()[0])
             return "Unexpected error", 422
 
-        return Response(json.dumps(body), status=200, mimetype='application/json')
+        redis.set("beacon:label:%s" % req_body['id'], req_body['label'])
+
+        # Publish beacon data for flask/frontend SSE
+        redis.publish("sse", json.dumps({
+            'data': {
+                'id': req_body['id'],
+                'label': req_body['label']
+            },
+            'type': 'beacon:label'
+        }))
+
+        return Response(json.dumps(req_body), status=200, mimetype='application/json')
+
+
+@app.route('/beacon/active', methods=['GET', 'POST'])
+def active():
+    if request.method == 'POST':
+        body = {
+            "type": "object",
+            "properties": {
+                "id": {"type": "number"},
+                "active": {"type": "boolean"}
+            },
+            "required": ["id", "active"]
+        }
+
+        req_body = request.get_json(silent=True)
+
+        print(req_body)
+
+        if req_body is None:
+            return "Body is None", 422
+
+        try:
+            validate(req_body, body)
+        except ValidationError:
+            print(sys.exc_info()[0])
+            return "ValidationError", 422
+        except SchemaError:
+            print(sys.exc_info()[0])
+            return "SchemaError", 422
+        except:
+            print(sys.exc_info()[0])
+            return "Unexpected error", 422
+
+        redis.set("beacon:active:%s" % req_body['id'], req_body['active'])
+
+        redis.publish("sse", json.dumps({
+            'data': {
+                'id': req_body['id'],
+                'active': req_body['active']
+            },
+            'type': 'beacon:active'
+        }))
+
+        return Response(json.dumps(req_body), status=200, mimetype='application/json')
+
 
 
 @app.route('/beacons', methods=['GET'])
@@ -73,7 +131,25 @@ def beacons():
     beacon_array = []
     beacons = redis.hgetall("beacons")
     for beacon_id, beacon in beacons.items():
-        beacon_array.append(json.loads(beacon.decode('utf8').replace("'", '"')))
+
+        beacon_id = beacon_id.decode("utf-8")
+
+        message = json.loads(beacon.decode('utf8').replace("'", '"'))
+
+        label = redis.get("beacon:label:%s" % beacon_id)
+        if label is not None:
+            message = {**message, **{'label': label.decode("utf-8")}}
+        else:
+            message = {**message, **{'label': label}}
+
+        active = redis.get("beacon:active:%s" % beacon_id)
+        if active is not None:
+            message = {**message, **{'active': active.decode("utf-8")}}
+        else:
+            message = {**message, **{'active': active}}
+
+        beacon_array.append(message)
+
     return Response(json.dumps(beacon_array), status=200, mimetype='application/json')
 
 
