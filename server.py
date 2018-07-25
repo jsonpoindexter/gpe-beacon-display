@@ -36,51 +36,6 @@ def root():
     return app.send_static_file('index.html')
 
 
-@app.route('/beacon/rider', methods=['GET', 'POST'])
-def rider():
-    if request.method == 'POST':
-        body = {
-            "type": "object",
-            "properties": {
-                "rider": {"type": "string"},
-                "id": {"type": "number"},
-            },
-            "required": ["rider", "id"]
-        }
-
-        req_body = request.get_json(silent=True)
-
-        print(req_body)
-
-        if req_body is None:
-            return "Body is None", 422
-
-        try:
-            validate(req_body, body)
-        except ValidationError:
-            print(sys.exc_info()[0])
-            return "ValidationError", 422
-        except SchemaError:
-            print(sys.exc_info()[0])
-            return "SchemaError", 422
-        except:
-            print(sys.exc_info()[0])
-            return "Unexpected error", 422
-
-        redis.set("beacon:rider:%s" % req_body['id'], req_body['rider'])
-
-        # Publish beacon data for flask/frontend SSE
-        redis.publish("sse", json.dumps({
-            'data': {
-                'id': req_body['id'],
-                'rider': req_body['rider']
-            },
-            'type': 'beacon:rider'
-        }))
-
-        return Response(json.dumps(req_body), status=200, mimetype='application/json')
-
-
 @app.route('/beacon/driver', methods=['GET', 'POST'])
 def driver():
     if request.method == 'POST':
@@ -121,6 +76,51 @@ def driver():
                 'driver': req_body['driver']
             },
             'type': 'beacon:label'
+        }))
+
+        return Response(json.dumps(req_body), status=200, mimetype='application/json')
+
+
+@app.route('/beacon/rider', methods=['GET', 'POST'])
+def rider():
+    if request.method == 'POST':
+        body = {
+            "type": "object",
+            "properties": {
+                "rider": {"type": "string"},
+                "id": {"type": "number"},
+            },
+            "required": ["rider", "id"]
+        }
+
+        req_body = request.get_json(silent=True)
+
+        print(req_body)
+
+        if req_body is None:
+            return "Body is None", 422
+
+        try:
+            validate(req_body, body)
+        except ValidationError:
+            print(sys.exc_info()[0])
+            return "ValidationError", 422
+        except SchemaError:
+            print(sys.exc_info()[0])
+            return "SchemaError", 422
+        except:
+            print(sys.exc_info()[0])
+            return "Unexpected error", 422
+
+        redis.set("beacon:rider:%s" % req_body['id'], req_body['rider'])
+
+        # Publish beacon data for flask/frontend SSE
+        redis.publish("sse", json.dumps({
+            'data': {
+                'id': req_body['id'],
+                'rider': req_body['rider']
+            },
+            'type': 'beacon:rider'
         }))
 
         return Response(json.dumps(req_body), status=200, mimetype='application/json')
@@ -241,7 +241,7 @@ def beacons():
         if rider is not None:
             message = {**message, **{'rider': rider.decode("utf-8")}}
         else:
-            message = {**message, **{'rider': label}}
+            message = {**message, **{'rider': rider}}
 
         active = redis.get("beacon:active:%s" % beacon_id)
         if active is not None:
@@ -250,6 +250,8 @@ def beacons():
             message = {**message, **{'active': active}}
 
         beacon_array.append(message)
+
+    print(beacon_array)
 
     return Response(json.dumps(beacon_array), status=200, mimetype='application/json')
 
