@@ -22,6 +22,28 @@ let sendLabel = _.debounce(function(beacon) {
     });
 }, 300);
 
+let sendDriver = _.debounce(function(beacon) {
+    let body = {
+        "driver": beacon.driver,
+        "id": beacon.id,
+    };
+    this.app.$http.post('/beacon/driver', body).then(response => {
+    }, response => {
+        console.log(response.body);
+    });
+}, 300);
+
+let sendRider = _.debounce(function(beacon) {
+    let body = {
+        "rider": beacon.rider,
+        "id": beacon.id,
+    };
+    this.app.$http.post('/beacon/rider', body).then(response => {
+    }, response => {
+        console.log(response.body);
+    });
+}, 300);
+
 var app = new Vue({
     el: '#app',
     data: {
@@ -50,7 +72,7 @@ var app = new Vue({
         ],
         beacons: [],
         menu: {
-            headers: ['Active', 'Id', 'Status', 'Name', 'Heading']
+            headers: ['Active', 'Id', 'Status', 'Driver Name', 'Rider Name', 'Heading']
         }
     },
     beforeMount(){
@@ -67,9 +89,10 @@ var app = new Vue({
                         id: beacon.id,
                         coords: beacon.coords,
                         label: beacon.label,
+                        rider: beacon.rider,
+                        driver: beacon.driver,
                         timestamp: beacon.timestamp,
                         heading: beacon.heading,
-                        label: beacon.label,
                         active: beacon.active,
                         selected: false,
                         status: 'circle-grey',
@@ -156,14 +179,24 @@ var app = new Vue({
             });
 
         },
-        beaconLabelChanged(id) {
+        beaconDriverChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
-            beacon.leafletObject.bindPopup(beacon.label)
+            // beacon.leafletObject.bindPopup(beacon.label)
+            console.log(beacon.driver);
+            sendDriver(beacon)
 
         },
-        beaconInputDebounce(id) {
+        beaconRiderChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
+            // beacon.leafletObject.bindPopup(beacon.label);
+            sendRider(beacon)
+
+        },
+        beaconLabelChanged(id, label) {
+            const beacon = this.beacons.find(beacon => beacon.id === id);
+            // beacon.leafletObject.bindPopup(beacon.label);
             sendLabel(beacon)
+
         },
         beaconSelectedChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
@@ -188,8 +221,6 @@ var app = new Vue({
             let source = new EventSource("/stream");
             source.addEventListener('beacon:message', event => {
                 let data = JSON.parse(event.data);
-                console.debug("Received beacon data");
-                console.debug(data);
                 const beacon = this.beacons.find(beacon => beacon.id === data.id);
                 if(beacon != null) {
                     beacon.leafletObject.setLatLng(data.coords);
@@ -202,8 +233,6 @@ var app = new Vue({
             }, false);
             source.addEventListener('beacon:label', event => {
                 let data = JSON.parse(event.data);
-                console.debug("Received beacon data");
-                console.debug(data);
                 const beacon = this.beacons.find(beacon => beacon.id === data.id);
                 if(beacon != null) {
                     beacon.label = data.label
@@ -211,10 +240,26 @@ var app = new Vue({
                     // TODO: add new beacons here
                 }
             }, false);
+            source.addEventListener('beacon:driver', event => {
+                let data = JSON.parse(event.data);
+                const beacon = this.beacons.find(beacon => beacon.id === data.id);
+                if(beacon != null) {
+                    beacon.driver = data.driver
+                } else {
+                    // TODO: add new beacons here
+                }
+            }, false);
+            source.addEventListener('beacon:rider', event => {
+                let data = JSON.parse(event.data);
+                const beacon = this.beacons.find(beacon => beacon.id === data.id);
+                if(beacon != null) {
+                    beacon.rider = data.rider
+                } else {
+                    // TODO: add new beacons here
+                }
+            }, false);
             source.addEventListener('beacon:active', event => {
                 let data = JSON.parse(event.data);
-                console.debug("Received beacon data");
-                console.debug(data);
                 const beacon = this.beacons.find(beacon => beacon.id === data.id);
                 if(beacon != null) {
                     beacon.active = data.active
