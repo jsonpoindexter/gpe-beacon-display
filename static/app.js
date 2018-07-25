@@ -252,6 +252,7 @@ var app = new Vue({
                 let data = JSON.parse(event.data);
                 const beacon = this.beacons.find(beacon => beacon.id === data.id);
                 if(beacon != null) {
+                    console.log("beacon.rider = data.rider")
                     beacon.rider = data.rider
                 } else {
                     // TODO: add new beacons here

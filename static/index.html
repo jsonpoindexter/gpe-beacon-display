@@ -42,7 +42,7 @@
                     </td>
                     <td>
                         <input type="radio"
-                            name="`beaconlabel:${beacon.id}`"
+                            v-bind:name="`beaconlabel:${beacon.id}`"
                             v-bind:checked="beacon.label === 'driver'"
                             v-on:change="beaconLabelChanged(beacon.id, 'driver')">
                         <input
