@@ -34,10 +34,14 @@
                         />
                     </td>
                     <td>{{beacon.id}}</td>
-                    <td v-bind:tooltip="beacon.elapseTime">
-                        <div v-bind:class="beacon.status"></div>
+                    <td >
+                        <div v-bind:class="beacon.status"
+                             class="tooltip">
+                            <span class="tooltiptext">{{beacon.elapseTime}}</span>
+                        </div>
                     </td>
                     <td>
+                        <input type="radio">
                         <input
                             ref="driverName"
                             v-model=beacon.driver
@@ -46,6 +50,7 @@
                             v-on:input="beaconDriverChanged(beacon.id)">
                     </td>
                     <td>
+                        <input type="radio">
                         <input
                             ref="riderName"
                             v-model=beacon.rider
