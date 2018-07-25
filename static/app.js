@@ -117,7 +117,6 @@ var app = new Vue({
             L.control.zoom({position: 'bottomright'}).addTo(this.map);
         },
         initLayers() {
-            console.log("initlayers")
             this.layers.forEach((layer) => {
                 const markerFeatures = layer.features.filter(feature => feature.type === 'marker');
                 markerFeatures.forEach((feature) => {
@@ -182,7 +181,6 @@ var app = new Vue({
         beaconDriverChanged(id) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
             // beacon.leafletObject.bindPopup(beacon.label)
-            console.log(beacon.driver);
             sendDriver(beacon)
 
         },
