@@ -111,3 +111,7 @@ html, body, #app {
     visibility: visible;
     opacity: 1;
 }
+
+.labelHighlight {
+    border: 5px solid red;
+}

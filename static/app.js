@@ -195,6 +195,7 @@ var app = new Vue({
         beaconLabelChanged(id, label) {
             const beacon = this.beacons.find(beacon => beacon.id === id);
             // beacon.leafletObject.bindPopup(beacon.label);
+            beacon.label = label;
             sendLabel(beacon)
 
         },

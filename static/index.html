@@ -41,22 +41,26 @@
                         </div>
                     </td>
                     <td>
-                        <input type="radio">
+                        <input type="radio"
+                            v-bind:value="beacon.label === 'driver'"
+                            v-on:change="beaconLabelChanged(beacon.id, 'driver')">
                         <input
                             ref="driverName"
                             v-model=beacon.driver
                             v-on:keyup.enter="nextLabel(index)"
-                            v-on:dbclick = "beaconLabelChanged(beacon.id, 'driver')"
-                            v-on:input="beaconDriverChanged(beacon.id)">
+                            v-on:input="beaconDriverChanged(beacon.id)"
+                            v-bind:class = "{labelHighlight : beacon.label === 'driver'}">
                     </td>
                     <td>
-                        <input type="radio">
+                        <input type="radio"
+                               v-bind:value="false"
+                               v-on:change="beaconLabelChanged(beacon.id, 'rider')">
                         <input
                             ref="riderName"
                             v-model=beacon.rider
                             v-on:keyup.enter="nextLabel(index)"
-                            v-on:dbclick = "beaconLabelChanged(beacon.id, 'rider')"
-                            v-on:input="beaconRiderChanged(beacon.id)">
+                            v-on:input="beaconRiderChanged(beacon.id)"
+                            v-bind:class = "{labelHighlight : beacon.label === 'rider'}">
                     </td>
                     <td>{{beacon.heading}}</td>
                 </tr>
