@@ -47,7 +47,7 @@
                             v-on:change="beaconLabelChanged(beacon.id, 'driver')">
                         <input
                             ref="driverName"
-                            v-model=beacon.driver
+                            v-model="beacon.driver"
                             v-on:keyup.enter="nextLabel(index)"
                             v-on:input="beaconDriverChanged(beacon.id)"
                             v-bind:class = "{labelHighlight : beacon.label === 'driver'}">
@@ -59,7 +59,7 @@
                                v-on:change="beaconLabelChanged(beacon.id, 'rider')">
                         <input
                             ref="riderName"
-                            v-model=beacon.rider
+                            v-model="beacon.rider"
                             v-on:keyup.enter="nextLabel(index)"
                             v-on:input="beaconRiderChanged(beacon.id)"
                             v-bind:class = "{labelHighlight : beacon.label === 'rider'}">

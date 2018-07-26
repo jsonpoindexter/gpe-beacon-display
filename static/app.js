@@ -233,7 +233,7 @@ var app = new Vue({
             source.addEventListener('beacon:label', event => {
                 let data = JSON.parse(event.data);
                 const beacon = this.beacons.find(beacon => beacon.id === data.id);
-                if(beacon != null) {
+                if(beacon != null && beacon.label !== data.label) {
                     beacon.label = data.label
                 } else {
                     // TODO: add new beacons here
@@ -242,7 +242,7 @@ var app = new Vue({
             source.addEventListener('beacon:driver', event => {
                 let data = JSON.parse(event.data);
                 const beacon = this.beacons.find(beacon => beacon.id === data.id);
-                if(beacon != null) {
+                if(beacon != null && beacon.driver !== data.driver) {
                     beacon.driver = data.driver
                 } else {
                     // TODO: add new beacons here
@@ -251,8 +251,7 @@ var app = new Vue({
             source.addEventListener('beacon:rider', event => {
                 let data = JSON.parse(event.data);
                 const beacon = this.beacons.find(beacon => beacon.id === data.id);
-                if(beacon != null) {
-                    console.log("beacon.rider = data.rider")
+                if(beacon != null && beacon.rider !== data.rider) {
                     beacon.rider = data.rider
                 } else {
                     // TODO: add new beacons here

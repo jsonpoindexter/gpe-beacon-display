@@ -75,7 +75,7 @@ def driver():
                 'id': req_body['id'],
                 'driver': req_body['driver']
             },
-            'type': 'beacon:label'
+            'type': 'beacon:driver'
         }))
 
         return Response(json.dumps(req_body), status=200, mimetype='application/json')
