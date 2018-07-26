@@ -214,10 +214,14 @@ var app = new Vue({
             this.beacons.forEach(beacon => {
                 if(beacon.id === id) {
                     beacon.selected = !beacon.selected;
-                    beacon.leafletObject.enablePermanentHighlight()
+                    if(beacon.selected) {
+                        beacon.leafletObject.enablePermanentHighlight();
+                    } else {
+                        beacon.leafletObject.disablePermanentHighlight();
+                    }
                 } else if (beacon.selected === true){
                     beacon.selected = false;
-                    beacon.leafletObject.disablePermanentHighlight()
+                    beacon.leafletObject.disablePermanentHighlight();
                 }
             });
         },
