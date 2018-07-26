@@ -213,7 +213,7 @@ var app = new Vue({
         beaconSelectedChanged(id) {
             this.beacons.forEach(beacon => {
                 if(beacon.id === id) {
-                    beacon.selected = true
+                    beacon.selected = !beacon.selected;
                     beacon.leafletObject.enablePermanentHighlight()
                 } else if (beacon.selected === true){
                     beacon.selected = false;
