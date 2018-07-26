@@ -244,7 +244,25 @@ var app = new Vue({
                     beacon.heading = data.heading;
                     beacon.timestamp = data.timestamp;
                 } else {
-                    // TODO: add new beacons here
+                    this.beacons.push({
+                        id: data.id,
+                        coords: data.coords,
+                        label: null,
+                        rider: null,
+                        driver: null,
+                        timestamp: data.timestamp,
+                        heading: data.heading,
+                        active: data.active,
+                        selected: false,
+                        status: 'circle-grey',
+                        elapseTime: null,
+                        leafletObject: L.marker([data.coords[0],data.coords[1]], {
+                            icon: beaconIcon,
+                            rotationAngle: 0,
+                        }).on('click', () => {
+                            this.beaconSelectedChanged(data.id)
+                        }).addTo(this.map)
+                    });
                 }
             }, false);
             source.addEventListener('beacon:label', event => {

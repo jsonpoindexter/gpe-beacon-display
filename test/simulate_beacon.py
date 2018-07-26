@@ -3,7 +3,7 @@ import redis
 import time
 import json
 
-max_beacons = 5
+max_beacons = 10
 
 redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 redis.pubsub()
