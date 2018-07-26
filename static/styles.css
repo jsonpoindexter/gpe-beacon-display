@@ -115,18 +115,3 @@ html, body, #app {
 .labelHighlight {
     border: 1px solid #3A7734;
 }
-
-/*leaflet-marker-icon leaflet-zoom-animated leaflet-interactive selectedMarker*/
-
-.leaflet-marker-icon {
-    width: 300px;
-    height: 300px;
-}
-
-.leaflet-marker-icon.selectedMarker {
-    background-color: rgba(0, 0, 255, 0.3);
-    width: 120px;
-    line-height: 120px;
-    border-radius: 50%;
-    border: 2px solid #666;
-}

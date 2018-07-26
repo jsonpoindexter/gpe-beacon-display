@@ -206,12 +206,6 @@ var app = new Vue({
                 } else {
                     beacon.leafletObject.disablePermanentHighlight()
                 }
-
-                // if(beacon.selected){
-                //     beacon.leafletObject._icon.classList.add('selectedMarker')
-                // } else {
-                //     beacon.leafletObject._icon.classList.remove('selectedMarker')
-                // }
             }
         },
         nextLabel: function (index) {
