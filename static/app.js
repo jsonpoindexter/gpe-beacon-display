@@ -22,6 +22,14 @@ let sendLabel = _.debounce(function(beacon) {
     });
 }, 300);
 
+function compare(a,b) {
+    if (a.id < b.id)
+        return -1;
+    if (a.id > b.id)
+        return 1;
+    return 0;
+}
+
 let sendDriver = _.debounce(function(beacon) {
     let body = {
         "driver": beacon.driver,
@@ -81,10 +89,15 @@ var app = new Vue({
     mounted() {
         this.initBeacons();
     },
+    computed: {
+        sortedBeacons: function() {
+            return this.beacons.sort(compare);
+        }
+    },
     methods: {
         initBeacons(){
             this.$http.get('/beacons').then(response => {
-                response.body.forEach((beacon) => {
+                response.body.sort(compare).forEach((beacon) => {
                     this.beacons.push({
                         id: beacon.id,
                         coords: beacon.coords,

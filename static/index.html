@@ -21,7 +21,7 @@
                     <th v-for="header in menu.headers"
                         :key="header">{{header}}</th>
                 </tr>
-                <tr v-for="(beacon, index) in beacons"
+                <tr v-for="(beacon, index) in sortedBeacons"
                     v-bind:class = "{selected : beacon.selected, inactive : !beacon.active}"
                     v-on:click.stop ="beaconSelectedChanged(beacon.id)"
                     v-bind:key="beacon.id" >
