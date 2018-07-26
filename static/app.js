@@ -198,15 +198,15 @@ var app = new Vue({
 
         },
         beaconSelectedChanged(id) {
-            const beacon = this.beacons.find(beacon => beacon.id === id);
-            if(beacon.active) {
-                beacon.selected = !beacon.selected;
-                if(beacon.selected){
+            this.beacons.forEach(beacon => {
+                if(beacon.id === id) {
+                    beacon.selected = true
                     beacon.leafletObject.enablePermanentHighlight()
-                } else {
+                } else if (beacon.selected === true){
+                    beacon.selected = false;
                     beacon.leafletObject.disablePermanentHighlight()
                 }
-            }
+            });
         },
         nextLabel: function (index) {
             if (index >= this.$refs.beaconLabel.length-1) {
