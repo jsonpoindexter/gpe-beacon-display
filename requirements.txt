@@ -8,3 +8,4 @@ MarkupSafe==1.0
 redis==2.10.6
 six==1.11.0
 Werkzeug==0.14.1
+python-redis==0.2.1
